@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>简易记事本</title>
+</head>
+<body>
+        <p>实现简易记事本</p>
+        <textarea name="tex" id="mytxt" cols="30" rows="10"></textarea>
+        <button onclick="save()">保存</button>
+        <script>
+            window.onload=function(){
+                var y=localStorage.getItem("txt");
+                document.getElementById('mytxt').innerHTML = y;
+              
+            }
+           function save(){
+               var x = document.getElementById('mytxt').value;
+                localStorage.setItem("txt",x);
+				doSave(x, "hello.txt");
+               
+           }
+		   
+		   function doSave(value, name) {
+		       var blob;
+		       if (typeof window.Blob == "function") {
+		           blob = new Blob([value]);
+		       } else {
+		           var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
+		           var bb = new BlobBuilder();
+		           bb.append(value);
+		           blob = bb.getBlob();
+		       }
+		       var URL = window.URL || window.webkitURL;
+		       var bloburl = URL.createObjectURL(blob);
+		       var anchor = document.createElement("a");
+		       if ('download' in anchor) {
+		           anchor.style.visibility = "hidden";
+		           anchor.href = bloburl;
+		           anchor.download = name;
+		           document.body.appendChild(anchor);
+		           var evt = document.createEvent("MouseEvents");
+		           evt.initEvent("click", true, true);
+		           anchor.dispatchEvent(evt);
+		           document.body.removeChild(anchor);
+		       } else if (navigator.msSaveBlob) {
+		           navigator.msSaveBlob(blob, name);
+		       } else {
+		           location.href = bloburl;
+		       }
+		   }
+        </script>
+</body>
+</html>
